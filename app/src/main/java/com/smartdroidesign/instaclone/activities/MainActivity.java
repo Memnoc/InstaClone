@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.activity_btn));
+        fab.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.camera_icon));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
