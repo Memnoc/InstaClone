@@ -14,9 +14,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.smartdroidesign.instaclone.R;
 import com.smartdroidesign.instaclone.models.InstaImages;
@@ -119,6 +122,16 @@ public class MediaActivity extends AppCompatActivity {
                 toggle();
             }
         });
+
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.content_images);
+        ImagesAdapter adapter = new ImagesAdapter(images);
+
+        recyclerView.setAdapter(adapter);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(getBaseContext(),4);
+        layoutManager.setOrientation(GridLayoutManager.VERTICAL);
+
+        recyclerView.setLayoutManager(layoutManager);
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -234,5 +247,36 @@ public class MediaActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    public class ImagesAdapter extends RecyclerView.Adapter<ImageViewHolder> {
+
+        ArrayList<InstaImages> images;
+
+        public ImagesAdapter(ArrayList<InstaImages> images) {
+            this.images = images;
+        }
+
+        @Override
+        public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(ImageViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return images.size();
+        }
+    }
+
+    public class ImageViewHolder extends RecyclerView.ViewHolder {
+
+        public ImageViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 }
