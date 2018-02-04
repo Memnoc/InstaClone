@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -130,14 +131,14 @@ public class MediaActivity extends AppCompatActivity {
             }
         });
 
-        selectedImage = (ImageView)findViewById(R.id.selected_image);
+        selectedImage = (ImageView) findViewById(R.id.selected_image);
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.content_images);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.content_images);
         ImagesAdapter adapter = new ImagesAdapter(images);
 
         recyclerView.setAdapter(adapter);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(getBaseContext(),4);
+        GridLayoutManager layoutManager = new GridLayoutManager(getBaseContext(), 4);
         layoutManager.setOrientation(GridLayoutManager.VERTICAL);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -200,7 +201,6 @@ public class MediaActivity extends AppCompatActivity {
 
             }
         });
-
 
 
     }
@@ -282,7 +282,7 @@ public class MediaActivity extends AppCompatActivity {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    selectedImage.setImageDrawable(vHolder.image.getDrawable());
+                    selectedImage.setImageDrawable(vHolder.imageView.getDrawable());
                 }
             });
 
@@ -297,42 +297,48 @@ public class MediaActivity extends AppCompatActivity {
     public class ImageViewHolder extends RecyclerView.ViewHolder {
 
 
-        private ImageView image;
+        private ImageView imageView;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
-            image = (ImageView)itemView.findViewById(R.id.image_thumb);
+            imageView = (ImageView) itemView.findViewById(R.id.image_thumb);
 
         }
 
-        public void updateUI(InstaImages image){
-            // Convert and grab a real image form the URL
-            this.image.setImageBitmap(decodeURI(image.getImgResourceUrl().getPath()));
+        public void updateUI(InstaImages image) {
+            DecodeBitmap task = new DecodeBitmap(imageView, image);
+            task.execute();
+
 
         }
     }
 
     class DecodeBitmap extends AsyncTask<Void, Void, Bitmap> {
-        private final WeakReference<ImageView> mImageViewWeakReference;
-        private InstaImages image;
+            private final WeakReference<ImageView> mImageViewWeakReference;
+            private InstaImages image;
 
-        public DecodeBitmap(WeakReference<ImageView> mImageViewWeakReference, InstaImages image) {
-            this.mImageViewWeakReference = mImageViewWeakReference;
-            this.image = image;
+            public DecodeBitmap(ImageView imageView, InstaImages image) {
+                this.mImageViewWeakReference = new WeakReference<ImageView>(imageView);
+                this.image = image;
+            }
+
+            @Override
+            protected Bitmap doInBackground(Void... voids) {
+                return decodeURI(image.getImgResourceUrl().getPath());
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                final ImageView img = mImageViewWeakReference.get();
+
+                if(img != null) {
+                    img.setImageBitmap(bitmap);
+                }
+            }
         }
 
-        @Override
-        protected Bitmap doInBackground(Void... voids) {
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-        }
-    }
-
-    public Bitmap decodeURI(String filePath){
+    public Bitmap decodeURI(String filePath) {
         BitmapFactory.Options options = new BitmapFactory.Options();
 //        options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(filePath, options);
@@ -340,14 +346,14 @@ public class MediaActivity extends AppCompatActivity {
         // Only scale if we need to
         // (16384 buffer for img processing)
         Boolean scaleByHeight = Math.abs(options.outHeight - 100) >= Math.abs(options.outWidth - 100);
-        if(options.outHeight * options.outWidth * 2 >= 16384){
+        if (options.outHeight * options.outWidth * 2 >= 16384) {
             // Load, scaling to smallest power of 2 that'll get it <= desired dimensions
             double sampleSize = scaleByHeight
                     ? options.outHeight / 1000
                     : options.outWidth / 1000;
             options.inSampleSize =
-                    (int)Math.pow(2d, Math.floor(
-                            Math.log(sampleSize)/Math.log(2d)));
+                    (int) Math.pow(2d, Math.floor(
+                            Math.log(sampleSize) / Math.log(2d)));
         }
 
         options.inJustDecodeBounds = false;
