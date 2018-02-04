@@ -105,6 +105,7 @@ public class MediaActivity extends AppCompatActivity {
 
     final int PERMISSION_READ_EXTERNAL = 111;
     private ArrayList<InstaImages> images = new ArrayList<>();
+    private ImageView selectedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +125,8 @@ public class MediaActivity extends AppCompatActivity {
                 toggle();
             }
         });
+
+        selectedImage = (ImageView)findViewById(R.id.selected_image);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.content_images);
         ImagesAdapter adapter = new ImagesAdapter(images);
@@ -266,6 +269,17 @@ public class MediaActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(ImageViewHolder holder, int position) {
+            final InstaImages image = images.get(position);
+            holder.updateUI(image);
+
+            final ImageViewHolder vHolder = holder;
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedImage.setImageDrawable(vHolder.image.getDrawable());
+                }
+            });
 
         }
 
@@ -285,7 +299,7 @@ public class MediaActivity extends AppCompatActivity {
 
         }
 
-        public void updateUi(InstaImages image){
+        public void updateUI(InstaImages image){
             // Convert and grab a real image form the URL
 
         }
