@@ -14,12 +14,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.smartdroidesign.instaclone.R;
 import com.smartdroidesign.instaclone.models.InstaImages;
@@ -275,8 +277,17 @@ public class MediaActivity extends AppCompatActivity {
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {
 
+        private ImageView image;
+
         public ImageViewHolder(View itemView) {
             super(itemView);
+            image = (ImageView)itemView.findViewById(R.id.image_thumb);
+
+        }
+
+        public void updateUi(InstaImages image){
+            // Convert and grab a real image form the URL
+
         }
     }
 }
