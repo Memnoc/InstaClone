@@ -303,6 +303,7 @@ public class MediaActivity extends AppCompatActivity {
 
         public void updateUI(InstaImages image){
             // Convert and grab a real image form the URL
+            this.image.setImageBitmap(decodeURI(image.getImgResourceUrl().getPath()));
 
         }
     }

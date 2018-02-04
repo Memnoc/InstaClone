@@ -13,4 +13,8 @@ public class InstaImages {
     public InstaImages(Uri imgResourceUrl) {
         this.imgResourceUrl = imgResourceUrl;
     }
+
+    public Uri getImgResourceUrl() {
+        return imgResourceUrl;
+    }
 }
