@@ -20,6 +20,7 @@ import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -266,7 +267,8 @@ public class MediaActivity extends AppCompatActivity {
 
         @Override
         public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return null;
+            View card = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_image, parent, false);
+            return new ImageViewHolder(card);
         }
 
         @Override
@@ -292,6 +294,7 @@ public class MediaActivity extends AppCompatActivity {
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {
+
 
         private ImageView image;
 
