@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -120,7 +121,7 @@ public class MediaActivity extends AppCompatActivity {
         });
 
 
-        if( ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSION_READ_EXTERNAL);
 
@@ -138,32 +139,47 @@ public class MediaActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        switch(requestCode){
+        switch (requestCode) {
             case PERMISSION_READ_EXTERNAL: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     retrieveAndSetImages();
                 }
             }
         }
     }
 
-    public void retrieveAndSetImages(){
+    public void retrieveAndSetImages() {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                images.clear();
+                Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
 
-        images.clear();
-        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,null,null,null,null);
-
-        if (cursor != null){
-            cursor.moveToFirst();
+                if (cursor != null) {
+                    cursor.moveToFirst();
 
 
-            for (int i = 0; i < cursor.getCount(); i++) {
-                cursor.moveToPosition(i);
-                Log.v("DONKEY", "URL: " + cursor.getString(1));
-                InstaImages img = new InstaImages(Uri.parse(cursor.getString(1)));
-                images.add(img);
+                    for (int i = 0; i < cursor.getCount(); i++) {
+                        cursor.moveToPosition(i);
+                        Log.v("DONKEY", "URL: " + cursor.getString(1));
+                        InstaImages img = new InstaImages(Uri.parse(cursor.getString(1)));
+                        images.add(img);
+                    }
+
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //set images on RecyclerView adapter
+                        // update images
+                    }
+                });
+
             }
+        });
 
-        }
+
 
     }
 
