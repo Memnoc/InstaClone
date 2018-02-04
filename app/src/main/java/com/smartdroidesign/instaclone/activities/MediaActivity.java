@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import com.smartdroidesign.instaclone.R;
 import com.smartdroidesign.instaclone.models.InstaImages;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -308,6 +309,26 @@ public class MediaActivity extends AppCompatActivity {
             // Convert and grab a real image form the URL
             this.image.setImageBitmap(decodeURI(image.getImgResourceUrl().getPath()));
 
+        }
+    }
+
+    class DecodeBitmap extends AsyncTask<Void, Void, Bitmap> {
+        private final WeakReference<ImageView> mImageViewWeakReference;
+        private InstaImages image;
+
+        public DecodeBitmap(WeakReference<ImageView> mImageViewWeakReference, InstaImages image) {
+            this.mImageViewWeakReference = mImageViewWeakReference;
+            this.image = image;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
         }
     }
 
